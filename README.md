@@ -1,2 +1,2 @@
-# samples
-Samples for .NET
+# net-core-samples
+Samples for .NET Core
