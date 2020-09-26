@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CookieBasedAuth.Controllers
@@ -8,7 +9,14 @@ namespace CookieBasedAuth.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return Content(User.Identity.Name);
+            Claim claim = User.FindFirst(ClaimsIdentity.DefaultRoleClaimType);
+            return Content($"User: {User.Identity.Name}, Role: {claim.Value}");
+        }
+
+        [Authorize(Roles = "admin")]
+        public IActionResult About()
+        {
+            return Content("Вход только для администратора");
         }
     }
 }

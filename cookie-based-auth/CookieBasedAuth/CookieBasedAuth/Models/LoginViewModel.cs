@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CookieBasedAuth.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Не указан Email")]
         public string Email { get; set; }
 
-        [Required]
         [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
     }
 }

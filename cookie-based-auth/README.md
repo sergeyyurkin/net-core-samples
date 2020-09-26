@@ -123,3 +123,4 @@ Claim определяет следующие свойства:
 * https://ru.wikipedia.org/wiki/cookie
 * https://metanit.com/sharp/aspnet5/15.1.php
 * https://docs.microsoft.com/aspnet/core/security/authentication/cookie
+* https://docs.microsoft.com/aspnet/core/security/authorization/claims

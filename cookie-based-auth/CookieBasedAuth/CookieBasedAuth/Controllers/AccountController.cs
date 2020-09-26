@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CookieBasedAuth.Data;
 using CookieBasedAuth.Models;
@@ -31,10 +32,10 @@ namespace CookieBasedAuth.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == input.Email && x.Password == input.Password);
+                var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(x => x.Email == input.Email && x.Password == input.Password);
                 if (user != null)
                 {
-                    await Authenticate(input.Email);
+                    await Authenticate(user);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -59,10 +60,18 @@ namespace CookieBasedAuth.Controllers
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == input.Email);
                 if (user == null)
                 {
-                    await _context.Users.AddAsync(new User { Email = input.Email, Password = input.Password });
+                    user = new User { Email = input.Email, Password = input.Password };
+
+                    var role = await _context.Roles.FirstOrDefaultAsync(u => u.Name == "user");
+                    if (role != null)
+                    {
+                        user.Role = role;
+                    }
+
+                    await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
 
-                    await Authenticate(input.Email);
+                    await Authenticate(user);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -81,11 +90,12 @@ namespace CookieBasedAuth.Controllers
         }
 
 
-        private async Task Authenticate(string email)
+        private async Task Authenticate(User user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, email)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
             };
 
             string nameType = ClaimsIdentity.DefaultNameClaimType;

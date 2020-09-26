@@ -32,7 +32,11 @@ namespace CookieBasedAuth
             services.AddDbContext<UserContext>(option => option.UseSqlServer(connection));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login"));
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
+                    options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
+                });
 
             services.AddControllersWithViews();
         }
