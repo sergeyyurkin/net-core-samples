@@ -26,8 +26,14 @@ namespace CookieBasedAuth.Controllers
             return GetUserInfo();
         }
 
-        [Authorize(Roles = AppAuthPolicy.OnlyForMicrosoft)]
+        [Authorize(Policy = AppAuthPolicy.OnlyForMicrosoft)]
         public IActionResult OnlyForMicrosoft()
+        {
+            return GetUserInfo();
+        }
+
+        [Authorize(Policy = AppAuthPolicy.UserAgeLimit)]
+        public IActionResult Only18Plus()
         {
             return GetUserInfo();
         }

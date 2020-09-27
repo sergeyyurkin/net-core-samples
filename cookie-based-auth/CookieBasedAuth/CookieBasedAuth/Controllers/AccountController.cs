@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using CookieBasedAuth.Data;
 using CookieBasedAuth.Models;
@@ -107,7 +106,10 @@ namespace CookieBasedAuth.Controllers
 
                 // Castom claims
                 new Claim(AppClaimTypes.Company, user.Company),
-                new Claim(ClaimTypes.Locality, user.City)
+                new Claim(ClaimTypes.Locality, user.City),
+
+                // Castom policy
+                new Claim(AppClaimTypes.YearOfBirth, user.Year.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

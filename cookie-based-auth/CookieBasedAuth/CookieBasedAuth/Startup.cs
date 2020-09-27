@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using CookieBasedAuth.Authorization.Handlers;
+using CookieBasedAuth.Authorization.Requirements;
+using CookieBasedAuth.Data;
+using CookieBasedAuth.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Microsoft.EntityFrameworkCore;
-
-using CookieBasedAuth.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using CookieBasedAuth.Models;
 
 namespace CookieBasedAuth
 {
@@ -40,16 +36,25 @@ namespace CookieBasedAuth
                     options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
                 });
 
+            // Add AgeHandler in service collection.
+            services.AddTransient<IAuthorizationHandler, AgeHandler>();
+
             services.AddAuthorization(options =>
             {
+                // Add castom simple policy in authorization.
                 options.AddPolicy(AppAuthPolicy.OnlyForLondon, policy =>
                 {
                     policy.RequireClaim(ClaimTypes.Locality, "London");
                 });
-                
-                options.AddPolicy(AppAuthPolicy.OnlyForMicrosoft, polycy =>
+                options.AddPolicy(AppAuthPolicy.OnlyForMicrosoft, policy =>
                 {
-                    polycy.RequireClaim(AppClaimTypes.Company, "Microsoft");
+                    policy.RequireClaim(AppClaimTypes.Company, "Microsoft");
+                });
+
+                // Add user age limit policy in authorization.
+                options.AddPolicy(AppAuthPolicy.UserAgeLimit, policy =>
+                {
+                    policy.Requirements.Add(new AgeRequirement(18));
                 });
             });
 

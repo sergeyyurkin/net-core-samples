@@ -4,5 +4,6 @@
     {
         public const string OnlyForLondon = "OnlyForLondon";
         public const string OnlyForMicrosoft = "OnlyForMicrosoft";
+        public const string UserAgeLimit = "UserAgeLimit";
     }
 }
