@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 
 using CookieBasedAuth.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using CookieBasedAuth.Models;
 
 namespace CookieBasedAuth
 {
@@ -37,6 +39,19 @@ namespace CookieBasedAuth
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
                     options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/account/login");
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AppAuthPolicy.OnlyForLondon, policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Locality, "London");
+                });
+                
+                options.AddPolicy(AppAuthPolicy.OnlyForMicrosoft, polycy =>
+                {
+                    polycy.RequireClaim(AppClaimTypes.Company, "Microsoft");
+                });
+            });
 
             services.AddControllersWithViews();
         }

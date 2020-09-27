@@ -60,7 +60,14 @@ namespace CookieBasedAuth.Controllers
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == input.Email);
                 if (user == null)
                 {
-                    user = new User { Email = input.Email, Password = input.Password };
+                    user = new User 
+                    { 
+                        Email = input.Email, 
+                        Password = input.Password,
+                        City = input.City,
+                        Company = input.Company,
+                        Year = input.Year
+                    };
 
                     var role = await _context.Roles.FirstOrDefaultAsync(u => u.Name == "user");
                     if (role != null)
@@ -94,18 +101,17 @@ namespace CookieBasedAuth.Controllers
         {
             var claims = new List<Claim>
             {
+                // Role claims
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name),
+
+                // Castom claims
+                new Claim(AppClaimTypes.Company, user.Company),
+                new Claim(ClaimTypes.Locality, user.City)
             };
 
-            string nameType = ClaimsIdentity.DefaultNameClaimType;
-            string roleType = ClaimsIdentity.DefaultRoleClaimType;
-
-            ClaimsIdentity identity = new ClaimsIdentity(claims, "ApplicationCookie", nameType, roleType);
-
-            string scheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
-            await HttpContext.SignInAsync(scheme, new ClaimsPrincipal(identity));
+            var identity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
         }
     }
 }
