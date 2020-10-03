@@ -36,6 +36,7 @@ namespace IdentityServer
                     // scopes that client has access to
                     AllowedScopes = { "api1" }
                 },
+
                 // interactive ASP.NET Core MVC client
                 new Client
                 {
@@ -50,10 +51,13 @@ namespace IdentityServer
                     // where to redirect to after logout
                     PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
+                    AllowOfflineAccess = true,
+
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api1"
                     }
                 }
             };
