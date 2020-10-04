@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "b45d7972-86db-4c95-9429-b4fbac4f9118",
+		"name": "JWT Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"alice\",\r\n  \"password\": \"alice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUri}}/auth/login",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"jon\",\r\n  \"password\": \"jon\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUri}}/auth/register",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb24ifQ.UsqKAvQajZc1Z5lcW-PRamqeBBTiW6PBJIFrKFUtdys",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUri}}/auth/verify",
+					"host": [
+						"{{baseUri}}"
+					],
+					"path": [
+						"auth",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ee343681-c5a4-4aa3-b69d-0673a749b0c5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ae71ad96-d913-4aac-acc3-b2c952095012",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d15db3ec-455d-41b0-8484-37c27e79188d",
+			"key": "baseUri",
+			"value": "https://localhost:5001"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
