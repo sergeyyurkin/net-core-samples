@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using RabbitMQ.Client;
 
-namespace Send
+namespace Producer
 {
-    class Program
+    public class Send
     {
         static void Main(string[] args)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "rabbitmq",
-                UserName = "user",
-                Password = "password"
-            };
+            var factory = new ConnectionFactory() { HostName = "localhost" };
 
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
@@ -21,18 +17,29 @@ namespace Send
             channel.QueueDeclare(
                 queue: "hello",
                 durable: false,
+                exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
-            string message = "helloworld";
+            string message = "Hello World!";
             var body = Encoding.UTF8.GetBytes(message);
 
-            channel.BasicPublish(
+            int i = 0;
+            while (i++ < 10)
+            {
+                channel.BasicPublish(
                 exchange: "",
                 routingKey: "hello",
+                basicProperties: null,
                 body: body);
 
-            Console.WriteLine(" [X] Sent {0}", message);
+                Console.WriteLine("{0}. [X] Sent {1}", i, message);
+
+                Thread.Sleep(1000);
+            }
+
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
     }
 }
